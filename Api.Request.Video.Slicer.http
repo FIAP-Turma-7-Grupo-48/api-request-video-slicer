@@ -1,0 +1,6 @@
+@api_request_video_slicer_HostAddress = http://localhost:5172
+
+GET {{api_request_video_slicer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

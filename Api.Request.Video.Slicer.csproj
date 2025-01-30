@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>api_request_video_slicer</RootNamespace>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1" />
+    <PackageReference Include="RabbitMQ.Client" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include=".\src\Api.Request.Video.Slicer.Domain\Api.Request.Video.Slicer.Domain.csproj" />
+    <ProjectReference Include=".\src\Api.Request.Video.Slicer.Infrastructure\Api.Request.Video.Slicer.Infrastructure.csproj" />
+    <ProjectReference Include=".\src\Api.Request.Video.Slicer.Controller\Api.Request.Video.Slicer.Controller.csproj" />
+    <ProjectReference Include=".\src\Api.Request.Video.Slicer.UseCase\Api.Request.Video.Slicer.UseCase.csproj" />
+  </ItemGroup>
+
+</Project>
