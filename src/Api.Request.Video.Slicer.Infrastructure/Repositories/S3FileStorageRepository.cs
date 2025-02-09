@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Amazon;
+﻿using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Api.Request.Video.Slicer.Infrastructure.Repository.Interfaces;
@@ -20,7 +15,7 @@ namespace Api.Request.Video.Slicer.Infrastructure.Repository
         {
             _bucketName = "fiap-video-slicer";
             _bucketRegion = RegionEndpoint.GetBySystemName("sa-east-1");
-            
+
             _s3Client = new AmazonS3Client(_bucketRegion);
         }
 
@@ -93,9 +88,9 @@ namespace Api.Request.Video.Slicer.Infrastructure.Repository
                 };
 
                 using (GetObjectResponse response = await _s3Client.GetObjectAsync(getRequest))
-                using (Stream responseStream = response.ResponseStream)                
+                using (Stream responseStream = response.ResponseStream)
                 {
-                    return ReadFully(responseStream);                                                            
+                    return ReadFully(responseStream);
                 }
             }
             catch (AmazonS3Exception e)
@@ -122,6 +117,13 @@ namespace Api.Request.Video.Slicer.Infrastructure.Repository
                 }
                 return ms.ToArray();
             }
+        }
+
+        public async Task<bool> UploadFileAsync(byte[] data, string keyName)
+        {
+            using var inputStream = new MemoryStream(data, 0, data.Length);
+            return await UploadFileAsync(inputStream, keyName);
+
         }
 
         public async Task<bool> UploadFileAsync(Stream stream, string keyName)

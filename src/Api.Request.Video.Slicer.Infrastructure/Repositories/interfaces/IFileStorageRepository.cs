@@ -8,6 +8,7 @@ namespace Api.Request.Video.Slicer.Infrastructure.Repository.Interfaces
 {
     public interface IFileStorageRepository
     {
+        Task<bool> UploadFileAsync(byte[] data, string keyName);
         Task<bool> UploadFileAsync(Stream stream, string keyName);
 
         Task<byte[]> DownloadFileAsync(string keyName, string localFilePath);

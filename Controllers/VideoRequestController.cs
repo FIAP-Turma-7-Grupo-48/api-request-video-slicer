@@ -2,6 +2,7 @@
 using Api.Request.Video.Slicer.Domain.Entities.Dtos.VideoRequestResponse;
 using Api.Request.Video.Slicer.Domain.Enum;
 using Api.Request.Video.Slicer.UseCase.Dtos;
+using api_request_video_slicer.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Extensions;
 
@@ -24,44 +25,25 @@ namespace api_request_video_slicer.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]        
-        public async Task<IActionResult> UploadVideo(IFormFile videoFile)
+        public async Task<IActionResult> UploadVideo(IFormFile formFile, CancellationToken cancellationToken)
         {
-            if (videoFile == null || videoFile.Length == 0)
+            if (formFile == null || formFile.Length == 0)
             {
                 return BadRequest("Arquivo vazio ou inexistente");
             }
 
-            if (!videoFile.ContentType.StartsWith("video/"))
+            if (!formFile.ContentType.StartsWith("video/"))
             {
                 return BadRequest("formato inválido, por favor envie um arquivo do tipo video.");
             }
 
             try
             {
-                //No linux ele retornará a pasta do home usuario que estará rodando a applicação
-                string uploadPath = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "uploads");
-
-                if (!Directory.Exists(uploadPath))
-                {
-                    Directory.CreateDirectory(uploadPath);
-                }
-
-                string fileName = Path.GetFileName(videoFile.FileName);
-                string fileWithPath = Path.Combine(uploadPath, fileName);
-                string extension = fileName.Split(".").Last();                
-                
-                Stream stream = Stream.Null;
-                await videoFile.CopyToAsync(stream);
-
+                var videoFile = await formFile.ToVideoFileAsync(cancellationToken);
 
                 CreateVideoRequestRequest createVideo = new()
                 {
-                    Extension = extension,
-                    FileName = fileName,
-                    FileType = VideoType.MP4.GetCurrentVideoType(extension),
-                    Stream = stream,
-                    Path = fileWithPath,
-                    ContentType = "video/mp4"
+                    Video = videoFile
                 };                    
 
                 CreateVideoRequestResponse? response = await _videoRequestApplication.CreateAsync(createVideo);

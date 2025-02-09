@@ -34,20 +34,18 @@ namespace Api.Request.Video.Slicer.UseCase.UseCase
         {
             VideoRequest videoRequest = new()
             {
-                Extension = createVideoRequestRequest.Extension,
-                FileName = createVideoRequestRequest.FileName,
-                VideoType = createVideoRequestRequest.FileType,
-
+                Extension = createVideoRequestRequest.Video.GetExtension(),
+                FileName = createVideoRequestRequest.Video.FileName,
             };
 
             videoRequest.Video = new StorageFile
             {
-                ContentType = createVideoRequestRequest.ContentType,
+                ContentType = createVideoRequestRequest.Video.ContentType,
                 Key = videoRequest.Id,
-                FileName = createVideoRequestRequest.FileName,
+                FileName = createVideoRequestRequest.Video.FileName,
             };
 
-            await _fileStorageRepository.UploadFileAsync(createVideoRequestRequest.Stream, $"{videoRequest.Id}");
+            await _fileStorageRepository.UploadFileAsync(createVideoRequestRequest.Video.Data, $"{videoRequest.Id}");
 
             await _videoRequestRepository.Create(videoRequest);
 

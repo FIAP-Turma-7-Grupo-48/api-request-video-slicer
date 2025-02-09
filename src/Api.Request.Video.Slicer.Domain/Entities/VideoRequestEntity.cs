@@ -13,7 +13,6 @@ namespace Api.Request.Video.Slicer.Domain
         public string Id { get; init; } 
         public string FileName { get; init; } = string.Empty;
         public string Extension { get; init; } = string.Empty;
-        public VideoType VideoType { get; init; }
         public RequestStatus Status { get; set; } = RequestStatus.Receveid;
         public StorageFile Video { get; set; }
         public StorageFile? ZippedImg { get; set; }
