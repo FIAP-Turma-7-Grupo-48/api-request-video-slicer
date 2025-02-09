@@ -14,6 +14,6 @@ namespace Api.Request.Video.Slicer.Infrastucture.Repositories.interfaces
         public Task Create(VideoRequest videoRequestEntity);
         public Task Update(VideoRequest videoRequestEntity);        
         public List<VideoRequest> GetPendingRequests();
-        public VideoRequest GetById(BsonObjectId id);
+        public VideoRequest GetById(string id);
     }
 }

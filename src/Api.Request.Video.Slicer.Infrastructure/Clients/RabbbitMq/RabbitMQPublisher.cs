@@ -14,9 +14,9 @@ public abstract class RabbitMQPublisher<T>
         _queue = queue;
     }
 
-    protected async Task PublishMessageAsync(T message, CancellationToken cancellationToken)
+    protected async Task PublishMessageAsync(T message)
     {
-        using var connection = await _factory.CreateConnectionAsync(cancellationToken);
+        using var connection = await _factory.CreateConnectionAsync();
         using var channel = await connection.CreateChannelAsync();
 
         await channel.QueueDeclareAsync(queue: _queue, durable: false, exclusive: false, autoDelete: false,
@@ -25,7 +25,7 @@ public abstract class RabbitMQPublisher<T>
         string jsonString = JsonSerializer.Serialize(message);
         var body = Encoding.UTF8.GetBytes(jsonString);
 
-        await channel.BasicPublishAsync(string.Empty, _queue, body, cancellationToken);
+        await channel.BasicPublishAsync(string.Empty, _queue, body);
 
     }
 }

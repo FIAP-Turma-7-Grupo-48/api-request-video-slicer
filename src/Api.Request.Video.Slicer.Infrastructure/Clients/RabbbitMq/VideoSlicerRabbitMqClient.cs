@@ -13,16 +13,16 @@ public class VideoSlicerRabbitMqClient :  RabbitMQPublisher<VideoRequest>, IVide
 
     }
 
-    public async Task SendAsync(VideoRequest videoRequest, CancellationToken cancellationToken)
+    public async Task SendAsync(VideoRequest videoRequest)
     {
         var dto = new SendVideoRequest
         {
-            fileName = "teste",
-            blobUrl = "teste",
+            fileName = videoRequest.fileName,
+            videoUrl = videoRequest.videoUrl,
             id = videoRequest.id.ToString(),
         };
 
-        await PublishMessageAsync(videoRequest, cancellationToken);
+        await PublishMessageAsync(videoRequest);
         
     }
 }

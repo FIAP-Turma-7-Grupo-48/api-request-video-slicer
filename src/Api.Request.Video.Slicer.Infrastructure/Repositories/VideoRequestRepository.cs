@@ -25,7 +25,7 @@ namespace Api.Request.Video.Slicer.Infrastucture.Repositories
             return Task.CompletedTask;
         }
 
-        public VideoRequest GetById(BsonObjectId id)
+        public VideoRequest GetById(string id)
         {
             var filter = Builders<VideoRequest>.Filter.Eq(x => x.id, id);
             return this._collectionVideoRequest.Find(filter).FirstOrDefault();

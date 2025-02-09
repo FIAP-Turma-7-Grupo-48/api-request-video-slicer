@@ -9,7 +9,7 @@ namespace Api.Request.Video.Slicer.Infrastucture.Clients.Domain
     public class SendVideoRequest
     {
         public string fileName { get; set; }
-        public string blobUrl { get; set; }
+        public string videoUrl { get; set; }
         public string id { get; set; }
     }
 }

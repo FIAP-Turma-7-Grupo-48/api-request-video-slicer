@@ -8,9 +8,13 @@
       "applicationUrl": "http://localhost:5172",
         "environmentVariables": {
             "ASPNETCORE_ENVIRONMENT": "Development",
-            "DefaultConnection": "mongodb://localhost:27017/VideoRequestSlicer",
-            "DefaultDatabase": "VideoRequestSlicer"
-
+            "DefaultConnection": "mongodb://root:example@localhost:27017/",
+            "DefaultDatabase": "VideoRequestSlicer",
+            //"AWS_ACCESS_KEY_ID": "",
+            //"AWS_SECRET_ACCESS_KEY": "",
+            "AWS_S3_BUCKET": "s3://fiap-video-slicer/",
+            "RABBITMQ_USER": "admin",
+            "RABBITMQ_PASS": "admin"
         }
     }
   }

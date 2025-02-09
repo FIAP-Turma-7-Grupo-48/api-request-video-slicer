@@ -9,9 +9,11 @@ namespace Api.Request.Video.Slicer.UseCase.Dtos
 {
     public class CreateVideoRequestRequest
     {
-        public string Id { get; set; }
+        public string Id = Guid.NewGuid().ToString();
         public string Extension { get; set; }
         public string FileName { get; set; }
-        public VideoTypeEnum fileType { get; set; }
+        public VideoTypeEnum FileType { get; set; }
+        public Stream Stream { get; set; }
+        public string Path { get; set; }
     }
 }

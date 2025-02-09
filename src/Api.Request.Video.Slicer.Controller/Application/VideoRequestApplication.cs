@@ -1,6 +1,7 @@
-
-using Api.Request.Video.Slicer.Controller.Application.Dtos.VideoRequestResponse;
+using Amazon.S3.Model.Internal.MarshallTransformations;
 using Api.Request.Video.Slicer.Controller.Application.Interfaces;
+using Api.Request.Video.Slicer.Domain;
+using Api.Request.Video.Slicer.Domain.Entities.Dtos.VideoRequestResponse;
 using Api.Request.Video.Slicer.UseCase.Dtos;
 using Api.Request.Video.Slicer.UseCase.UseCase.Interfaces;
 
@@ -14,16 +15,21 @@ public class VideoRequestApplication : IVideoRequestApplication
 		_VideoRequestUseCase = VideoRequestUseCase;
 	}
 
-	public async Task<CreateVideoRequestResponse?> CreateAsync(CreateVideoRequestRequest createVideoRequestRequest, CancellationToken cancellationToken)
-	{
+    public async Task<CreateVideoRequestResponse?> CreateAsync(CreateVideoRequestRequest createVideoRequestRequest)
+    {
 
-		var VideoRequest = await _VideoRequestUseCase.CreateAsync(createVideoRequestRequest, cancellationToken);
-		//return VideoRequest?.ToCreateVideoRequestResponse(); 
-		return new CreateVideoRequestResponse();
+        var VideoRequest = await _VideoRequestUseCase.CreateAsync(createVideoRequestRequest);
+
+        return Task.FromResult(new CreateVideoRequestResponse() { videoRequestId = VideoRequest.id }).Result;
 	}
 
-    public Task<GetVideoRequestResponse?> GetById(string id, CancellationToken cancellationToken)
+    public Task<CreateVideoRequestResponse?> CreateInBucket(CreateVideoRequestRequest createVideoRequestRequest, Stream stream)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<GetImagesResponse?> GetById(string id)
+    {
+        return await _VideoRequestUseCase.GetById(id);        
     }
 }

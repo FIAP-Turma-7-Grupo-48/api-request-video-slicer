@@ -6,6 +6,8 @@ using Api.Request.Video.Slicer.Infrastructure.Context;
 using Api.Request.Video.Slicer.Infrastucture.Repositories.interfaces;
 using Api.Request.Video.Slicer.Infrastucture.Repositories;
 using Api.Request.Video.Slicer.Infrastucture.Context;
+using Api.Request.Video.Slicer.Infrastructure.Repository.Interfaces;
+using Api.Request.Video.Slicer.Infrastructure.Repository;
 
 namespace api.request.video.Extensions;
 
@@ -22,6 +24,7 @@ internal static class InfrastructureExtension
 
 		return services
             .AddContext(configuration)
+			.AddS3FileStorage()
             .AddMongoRepositories()			
 			.AddClients(configuration)			
 			.AddRabbitMqConnectionFactory(configuration);
@@ -32,8 +35,13 @@ internal static class InfrastructureExtension
 		return services
 			.AddScoped<IVideoRequestRepository, VideoRequestRepository>();		
 	}
+    private static IServiceCollection AddS3FileStorage(this IServiceCollection services)
+    {
+        return services
+            .AddScoped<IFileStorageRepository, S3FileStorageRepository>();
+    }
 
-	private static IServiceCollection AddContext(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddContext(this IServiceCollection services, IConfiguration configuration)
 	{	
         var mongoConfig = new MongoDbConfig
         {
@@ -66,8 +74,8 @@ internal static class InfrastructureExtension
 					{ 
 						HostName = "localhost",
 						Port = 5672,
-                        UserName = "guest",
-                        Password = "guest"
+                        UserName = Environment.GetEnvironmentVariable("RABBITMQ_USER"),
+                        Password = Environment.GetEnvironmentVariable("RABBITMQ_PASS")
                     }
 				);
     } 

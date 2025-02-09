@@ -10,4 +10,8 @@
     <ProjectReference Include="..\Api.Request.Video.Slicer.UseCase\Api.Request.Video.Slicer.UseCase.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Application\Dtos\" />
+  </ItemGroup>
+
 </Project>
