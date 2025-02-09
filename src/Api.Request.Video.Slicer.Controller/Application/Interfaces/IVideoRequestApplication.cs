@@ -6,5 +6,6 @@ namespace Api.Request.Video.Slicer.Controller.Application.Interfaces;
 public interface IVideoRequestApplication
 {
 	Task<GetImagesResponse?> GetById(string id);
-	Task<CreateVideoRequestResponse?> CreateAsync(CreateVideoRequestRequest createVideoRequestRequest);    
+	Task<CreateVideoRequestResponse?> CreateAsync(CreateVideoRequestRequest createVideoRequestRequest);
+	Task UpdateAsync(UpdateVideoRequestStatus updateVideoRequestStatus);
 }

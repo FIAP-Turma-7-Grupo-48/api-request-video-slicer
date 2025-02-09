@@ -9,19 +9,24 @@ namespace Api.Request.Video.Slicer.controller.Application;
 
 public class VideoRequestApplication : IVideoRequestApplication
 {
-	private readonly IVideoRequestUseCase _VideoRequestUseCase;
-	public VideoRequestApplication(IVideoRequestUseCase VideoRequestUseCase)
-	{
-		_VideoRequestUseCase = VideoRequestUseCase;
-	}
+    private readonly IVideoRequestUseCase _videoRequestUseCase;
+    public VideoRequestApplication(IVideoRequestUseCase VideoRequestUseCase)
+    {
+        _videoRequestUseCase = VideoRequestUseCase;
+    }
 
     public async Task<CreateVideoRequestResponse?> CreateAsync(CreateVideoRequestRequest createVideoRequestRequest)
     {
 
-        var VideoRequest = await _VideoRequestUseCase.CreateAsync(createVideoRequestRequest);
+        var VideoRequest = await _videoRequestUseCase.CreateAsync(createVideoRequestRequest);
 
-        return Task.FromResult(new CreateVideoRequestResponse() { videoRequestId = VideoRequest.id }).Result;
-	}
+        return new CreateVideoRequestResponse() { videoRequestId = VideoRequest.Id };
+    }
+
+    public Task UpdateAsync(UpdateVideoRequestStatus updateVideoRequestStatus)
+    {
+        return _videoRequestUseCase.UpdateStatusAsync(updateVideoRequestStatus);
+    }
 
     public Task<CreateVideoRequestResponse?> CreateInBucket(CreateVideoRequestRequest createVideoRequestRequest, Stream stream)
     {
@@ -30,6 +35,6 @@ public class VideoRequestApplication : IVideoRequestApplication
 
     public async Task<GetImagesResponse?> GetById(string id)
     {
-        return await _VideoRequestUseCase.GetById(id);        
+        return await _videoRequestUseCase.GetById(id);
     }
 }

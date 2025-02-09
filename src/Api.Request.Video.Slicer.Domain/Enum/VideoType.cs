@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Api.Request.Video.Slicer.Domain.Enum
 {
-    public enum VideoTypeEnum
+    public enum VideoType
     {
         MP4,
         AVI,

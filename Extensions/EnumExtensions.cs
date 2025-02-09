@@ -6,25 +6,25 @@ namespace WebApi.Extensions;
 
 public static class EnumExtension
 {
-    public static VideoTypeEnum GetCurrentVideoType(this VideoTypeEnum videoType, string extension)
+    public static VideoType GetCurrentVideoType(this VideoType videoType, string extension)
     {
         switch (extension)
         {
             case "mp4":
-                return VideoTypeEnum.MP4;                
+                return VideoType.MP4;                
             case "mov":
-                return VideoTypeEnum.MOV;                
+                return VideoType.MOV;                
             case "avi":
-                return VideoTypeEnum.AVI;                
+                return VideoType.AVI;                
             case "webm":
-                return VideoTypeEnum.WEBM;                
+                return VideoType.WEBM;                
             case "mkv":
-                return VideoTypeEnum.MKV;                
+                return VideoType.MKV;                
             case "flv":
-                return VideoTypeEnum.FLV;                
+                return VideoType.FLV;                
         }
 
-        return VideoTypeEnum.Outro;
+        return VideoType.Outro;
 
     }
 }

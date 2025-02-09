@@ -1,7 +1,9 @@
 using api.request.video.Extensions;
+using api_request_video_slicer.BackgroundServices;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.OpenApi.Models;
+using RabbitMQ.Client;
 using WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +18,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddUseCase();
 builder.Services.AddControllerLayerDI();
 builder.Services.AddInfrastructure(builder.Configuration);
+AddRabbitMqConnectionFactory(builder.Services);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -33,6 +36,7 @@ builder.Services.Configure<KestrelServerOptions>(options =>
 });
 
 var app = builder.Build();
+builder.Services.AddHostedService<RabbitMqWorker>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -52,3 +56,24 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+IServiceCollection AddRabbitMqConnectionFactory(IServiceCollection services)
+{
+    var hostName = Environment.GetEnvironmentVariable("RabbitMqHostName");
+    var port = int.Parse(Environment.GetEnvironmentVariable("RabbitMqPort"));
+    var user = Environment.GetEnvironmentVariable("RabbitMqUserName");
+    var password = Environment.GetEnvironmentVariable("RabbitMqPassword");
+
+    return
+        services
+            .AddSingleton<IConnectionFactory>(
+                new ConnectionFactory()
+                {
+                    HostName = hostName,
+                    Port = port,
+                    UserName = user,
+                    Password = password
+                }
+            );
+}

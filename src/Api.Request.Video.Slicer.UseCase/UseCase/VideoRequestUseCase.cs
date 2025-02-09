@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Api.Request.Video.Slicer.Domain;
 using Api.Request.Video.Slicer.Domain.Entities.Dtos.VideoRequestResponse;
+using Api.Request.Video.Slicer.Domain.Enum;
+using Api.Request.Video.Slicer.Domain.ValueObjects;
 using Api.Request.Video.Slicer.Infrastructure.Repository.Interfaces;
 using Api.Request.Video.Slicer.Infrastucture.Repositories;
 using Api.Request.Video.Slicer.Infrastucture.Repositories.interfaces;
@@ -23,46 +25,67 @@ namespace Api.Request.Video.Slicer.UseCase.UseCase
             IFileStorageRepository fileStorageRepository,
             IVideoSlicerClient videoSlicerClient
         )
-        { 
+        {
             _videoRequestRepository = videoRequestRepository;
             _fileStorageRepository = fileStorageRepository;
             _videoSlicerClient = videoSlicerClient;
         }
         public async Task<VideoRequest> CreateAsync(CreateVideoRequestRequest createVideoRequestRequest)
         {
-
-            VideoRequest videoRequest = new();
-
-            try
+            VideoRequest videoRequest = new()
             {
-                await _fileStorageRepository.UploadFileAsync(createVideoRequestRequest.Stream, $"{videoRequest.id}");
+                Extension = createVideoRequestRequest.Extension,
+                FileName = createVideoRequestRequest.FileName,
+                VideoType = createVideoRequestRequest.FileType,
 
-                videoRequest.extension = createVideoRequestRequest.Extension;
-                videoRequest.fileName = createVideoRequestRequest.FileName;
-                videoRequest.videoTypeEnum = createVideoRequestRequest.FileType;
-                videoRequest.videoUrl = $"{Environment.GetEnvironmentVariable("AWS_S3_BUCKET")}{videoRequest.id}";
+            };
 
-                await _videoRequestRepository.Create(videoRequest);
-
-                await _videoSlicerClient.SendAsync(videoRequest);
-            }
-            catch (Exception ex)
+            videoRequest.Video = new StorageFile
             {
-                Console.WriteLine(ex.ToString());
-                throw ex;
-            }
-                        
+                ContentType = createVideoRequestRequest.ContentType,
+                Key = videoRequest.Id,
+                FileName = createVideoRequestRequest.FileName,
+            };
+
+            await _fileStorageRepository.UploadFileAsync(createVideoRequestRequest.Stream, $"{videoRequest.Id}");
+
+            await _videoRequestRepository.Create(videoRequest);
+
+            await _videoSlicerClient.SendAsync(videoRequest);
+
             return Task.FromResult(videoRequest).Result;
+        }
+
+        public async Task UpdateStatusAsync(UpdateVideoRequestStatus updateVideoRequestStatus)
+        {
+            VideoRequest videoRequest = _videoRequestRepository.GetById(updateVideoRequestStatus.RequestId);
+
+            videoRequest.Status = updateVideoRequestStatus.Status;
+            if(updateVideoRequestStatus.Status == RequestStatus.Processed)
+            {
+                videoRequest.ZippedImg = updateVideoRequestStatus.File;
+            }
+
+            await _videoRequestRepository.UpdateAsync(videoRequest);
+
         }
 
         public async Task<GetImagesResponse?> GetById(string id)
         {
+
+            
             VideoRequest videoRequest = _videoRequestRepository.GetById(id);
-            var bytes = await _fileStorageRepository.DownloadFileAsync(videoRequest.imagesFileName,"");
+
+            if (videoRequest.Status != Domain.Enum.RequestStatus.Processed)
+            {
+                //Todo: dar error
+
+            }
+                var bytes = await _fileStorageRepository.DownloadFileAsync(videoRequest.ZippedImg!.Value.Key, "");
             GetImagesResponse response = new()
             {
                 Images = bytes.ToArray(),
-                FileName = videoRequest.imagesFileName,
+                FileName = videoRequest.ZippedImg.Value.Key,
             };
             return response;
         }

@@ -12,8 +12,9 @@ namespace Api.Request.Video.Slicer.UseCase.Dtos
         public string Id = Guid.NewGuid().ToString();
         public string Extension { get; set; }
         public string FileName { get; set; }
-        public VideoTypeEnum FileType { get; set; }
+        public VideoType FileType { get; set; }
         public Stream Stream { get; set; }
         public string Path { get; set; }
+        public string ContentType { get; set; }
     }
 }

@@ -14,5 +14,6 @@ namespace Api.Request.Video.Slicer.UseCase.UseCase.Interfaces
     {
         Task<GetImagesResponse?> GetById(string id);
         Task<VideoRequest> CreateAsync(CreateVideoRequestRequest createCustomerRequest);
+        Task UpdateStatusAsync(UpdateVideoRequestStatus updateVideoRequestStatus);
     }
 }

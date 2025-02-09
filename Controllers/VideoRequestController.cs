@@ -58,14 +58,13 @@ namespace api_request_video_slicer.Controllers
                 {
                     Extension = extension,
                     FileName = fileName,
-                    FileType = VideoTypeEnum.MP4.GetCurrentVideoType(extension),
+                    FileType = VideoType.MP4.GetCurrentVideoType(extension),
                     Stream = stream,
-                    Path = fileWithPath
-
+                    Path = fileWithPath,
+                    ContentType = "video/mp4"
                 };                    
-                
 
-                CreateVideoRequestResponse response = await _videoRequestApplication.CreateAsync(createVideo);
+                CreateVideoRequestResponse? response = await _videoRequestApplication.CreateAsync(createVideo);
                  
                 return Ok(response);
             }
@@ -83,7 +82,7 @@ namespace api_request_video_slicer.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DownloadImages([FromQuery] string id)
         {
-            GetImagesResponse response = await _videoRequestApplication.GetById(id);
+            GetImagesResponse? response = await _videoRequestApplication.GetById(id);
 
             return File(response.Images, "application/zip");
         }

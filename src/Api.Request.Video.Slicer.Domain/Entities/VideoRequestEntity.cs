@@ -1,28 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Api.Request.Video.Slicer.Domain.Enum;
-using MongoDB.Bson;
-using Api.Request.Video.Slicer.Domain.Entities.Dtos.VideoRequestResponse;
+﻿using Api.Request.Video.Slicer.Domain.Enum;
+using Api.Request.Video.Slicer.Domain.ValueObjects;
 
 
 namespace Api.Request.Video.Slicer.Domain
 {
     public class VideoRequest
     {
-        public VideoRequest() {
-            this.id = Guid.NewGuid().ToString();
+        public VideoRequest()
+        {
+            Id = Guid.NewGuid().ToString();
         }
-        public string id;
-        public string fileName;
-        public string extension;
-        public VideoTypeEnum videoTypeEnum;
-        public string videoUrl;
-        public string imagesFileName;
-        public string imagesUrl;
+        public string Id { get; init; } 
+        public string FileName { get; init; } = string.Empty;
+        public string Extension { get; init; } = string.Empty;
+        public VideoType VideoType { get; init; }
+        public RequestStatus Status { get; set; } = RequestStatus.Receveid;
+        public StorageFile Video { get; set; }
+        public StorageFile? ZippedImg { get; set; }
     }
 
 }

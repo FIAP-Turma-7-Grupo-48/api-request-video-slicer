@@ -8,7 +8,7 @@ namespace api_request_video_slicer.Extensions
         public static CreateVideoRequestResponse ToCreateVideoRequestResponse(this VideoRequest videoRequest)
         {
             CreateVideoRequestResponse videoRequestResponse = new();
-            videoRequestResponse.videoRequestId = videoRequest.id;
+            videoRequestResponse.videoRequestId = videoRequest.Id;
             return videoRequestResponse;
         }
     }
