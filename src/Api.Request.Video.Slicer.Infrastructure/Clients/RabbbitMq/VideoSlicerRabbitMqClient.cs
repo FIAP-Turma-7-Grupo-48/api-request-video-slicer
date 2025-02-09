@@ -17,9 +17,13 @@ public class VideoSlicerRabbitMqClient :  RabbitMQPublisher<VideoRequest>, IVide
     {
         var dto = new SendVideoRequest
         {
-            fileName = videoRequest.fileName,
-            videoUrl = videoRequest.videoUrl,
-            id = videoRequest.id.ToString(),
+            RequestId = videoRequest.id,
+            StorageFile = new()
+            {
+                FileName = videoRequest.fileName,
+                Key = videoRequest.id,
+                ContentType = "video/mp4",
+            }            
         };
 
         await PublishMessageAsync(videoRequest);

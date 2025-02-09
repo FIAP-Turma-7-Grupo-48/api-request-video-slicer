@@ -35,12 +35,12 @@ namespace Api.Request.Video.Slicer.UseCase.UseCase
 
             try
             {
-                await _fileStorageRepository.UploadFileAsync(createVideoRequestRequest.Stream, $"{createVideoRequestRequest.FileName}-{videoRequest.id}");
+                await _fileStorageRepository.UploadFileAsync(createVideoRequestRequest.Stream, $"{videoRequest.id}");
 
                 videoRequest.extension = createVideoRequestRequest.Extension;
                 videoRequest.fileName = createVideoRequestRequest.FileName;
                 videoRequest.videoTypeEnum = createVideoRequestRequest.FileType;
-                videoRequest.videoUrl = $"{Environment.GetEnvironmentVariable("AWS_S3_BUCKET")}{createVideoRequestRequest.FileName}-{videoRequest.id}";
+                videoRequest.videoUrl = $"{Environment.GetEnvironmentVariable("AWS_S3_BUCKET")}{videoRequest.id}";
 
                 await _videoRequestRepository.Create(videoRequest);
 
