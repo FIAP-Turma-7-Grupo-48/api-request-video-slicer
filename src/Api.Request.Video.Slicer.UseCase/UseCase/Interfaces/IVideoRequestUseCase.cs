@@ -14,8 +14,8 @@ namespace Api.Request.Video.Slicer.UseCase.UseCase.Interfaces
     public interface IVideoRequestUseCase
     {
         Task<GetImagesResponse?> GetById(string id);
-        Task<VideoRequest> CreateAsync(CreateVideoRequestRequest createCustomerRequest);
-        Task<IEnumerable<VideoRequest>> ListAsync(IEnumerable<RequestStatus> orderStatus, int? page, int? limit, CancellationToken cancellationToken);
+        Task<VideoRequest> CreateAsync(CreateVideoRequestRequest createCustomerRequest, string userId);
+        Task<IEnumerable<VideoRequest>> ListAsync(IEnumerable<RequestStatus> orderStatus, string userId, int? page, int? limit, CancellationToken cancellationToken);
         Task UpdateStatusAsync(UpdateVideoRequestStatus updateVideoRequestStatus);
     }
 }

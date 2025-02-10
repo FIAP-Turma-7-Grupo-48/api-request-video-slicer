@@ -7,7 +7,7 @@ namespace Api.Request.Video.Slicer.Infrastucture.Repositories.interfaces
     {
         public Task CreateAsync(VideoRequest videoRequestEntity);
         Task UpdateAsync(VideoRequest videoRequestEntity);
-        Task<IEnumerable<VideoRequest>> ListAsync(IEnumerable<RequestStatus> orderStatus, int? page, int? limit, CancellationToken cancellationToken);
+        Task<IEnumerable<VideoRequest>> ListAsync(IEnumerable<RequestStatus> orderStatus, string userId, int? page, int? limit, CancellationToken cancellationToken);
         public Task<VideoRequest> GetByIdAsync(string id);
     }
 }

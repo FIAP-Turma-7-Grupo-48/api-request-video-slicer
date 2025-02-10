@@ -24,12 +24,13 @@ namespace Api.Request.Video.Slicer.UseCase.UseCase
             _fileStorageRepository = fileStorageRepository;
             _videoSlicerClient = videoSlicerClient;
         }
-        public async Task<VideoRequest> CreateAsync(CreateVideoRequestRequest createVideoRequestRequest)
+        public async Task<VideoRequest> CreateAsync(CreateVideoRequestRequest createVideoRequestRequest, string userId)
         {
             VideoRequest videoRequest = new()
             {
                 Extension = createVideoRequestRequest.Video.GetExtension(),
                 FileName = createVideoRequestRequest.Video.FileName,
+                UserId = userId
             };
 
             videoRequest.Video = new StorageFile
@@ -62,7 +63,7 @@ namespace Api.Request.Video.Slicer.UseCase.UseCase
 
         }
 
-        public Task<IEnumerable<VideoRequest>> ListAsync(IEnumerable<RequestStatus> orderStatus, int? page, int? limit, CancellationToken cancellationToken)
+        public Task<IEnumerable<VideoRequest>> ListAsync(IEnumerable<RequestStatus> orderStatus, string userId, int? page, int? limit, CancellationToken cancellationToken)
         {
             return _videoRequestRepository.ListAsync(orderStatus, page, limit, cancellationToken);  
         }

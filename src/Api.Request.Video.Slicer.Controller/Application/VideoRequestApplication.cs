@@ -16,10 +16,10 @@ public class VideoRequestApplication : IVideoRequestApplication
         _videoRequestUseCase = VideoRequestUseCase;
     }
 
-    public async Task<CreateVideoRequestResponse?> CreateAsync(CreateVideoRequestRequest createVideoRequestRequest)
+    public async Task<CreateVideoRequestResponse?> CreateAsync(CreateVideoRequestRequest createVideoRequestRequest, string userId)
     {
 
-        var VideoRequest = await _videoRequestUseCase.CreateAsync(createVideoRequestRequest);
+        var VideoRequest = await _videoRequestUseCase.CreateAsync(createVideoRequestRequest, userId);
 
         return new CreateVideoRequestResponse() { videoRequestId = VideoRequest.Id };
     }
@@ -29,9 +29,9 @@ public class VideoRequestApplication : IVideoRequestApplication
         return _videoRequestUseCase.UpdateStatusAsync(updateVideoRequestStatus);
     }
 
-    public async Task<IEnumerable<ListVideoRequestResponse>> ListAsync(IEnumerable<RequestStatus> requestStatus, int? page, int? limit, CancellationToken cancellationToken)
+    public async Task<IEnumerable<ListVideoRequestResponse>> ListAsync(IEnumerable<RequestStatus> requestStatus, string userId, int? page, int? limit, CancellationToken cancellationToken)
     {
-        var requests = await _videoRequestUseCase.ListAsync(requestStatus, page, limit, cancellationToken);
+        var requests = await _videoRequestUseCase.ListAsync(requestStatus, userId, page, limit, cancellationToken);
 
         var response = requests.Select(x => new ListVideoRequestResponse() { 
             Id = x.Id,

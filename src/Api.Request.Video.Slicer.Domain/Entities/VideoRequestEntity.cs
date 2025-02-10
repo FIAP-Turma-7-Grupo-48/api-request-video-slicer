@@ -16,6 +16,7 @@ namespace Api.Request.Video.Slicer.Domain
         public RequestStatus Status { get; set; } = RequestStatus.Receveid;
         public StorageFile Video { get; set; }
         public StorageFile? ZippedImg { get; set; }
+        public string UserId { get; set; }
     }
 
 }

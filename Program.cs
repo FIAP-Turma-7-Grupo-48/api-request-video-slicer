@@ -1,9 +1,12 @@
 using api.request.video.Extensions;
 using api_request_video_slicer.BackgroundServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
+using System.Text;
 using WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +22,23 @@ builder.Services.AddUseCase();
 builder.Services.AddControllerLayerDI();
 builder.Services.AddInfrastructure(builder.Configuration);
 AddRabbitMqConnectionFactory(builder.Services);
+
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -51,6 +71,9 @@ app.UseSwaggerUI(c =>
     
 });
 
+app.UseAuthorization();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -33,7 +33,7 @@ namespace Api.Request.Video.Slicer.Infrastucture.Repositories
         }
 
 
-        public async Task<IEnumerable<VideoRequest>> ListAsync(IEnumerable<RequestStatus> orderStatus, int? page, int? limit, CancellationToken cancellationToken)
+        public async Task<IEnumerable<VideoRequest>> ListAsync(IEnumerable<RequestStatus> orderStatus, string userId, int? page, int? limit, CancellationToken cancellationToken)
         {
             var take = limit ?? int.MaxValue;
 
@@ -42,12 +42,14 @@ namespace Api.Request.Video.Slicer.Infrastucture.Repositories
             var findOptions = new FindOptions<VideoRequest>()
             {
                 Skip = skip,
-                Limit = take
+                Limit = take,
             };
 
             var filters = Builders<VideoRequest>
-                .Filter
-                .In(x => x.Status, orderStatus);
+                .Filter.And(
+                    Builders<VideoRequest>.Filter.Eq(x => x.UserId, userId), 
+                    Builders<VideoRequest>.Filter.In(x => x.Status, orderStatus)
+                );
 
             var orders = await _collectionVideoRequest
                 .FindAsync(filters, findOptions, cancellationToken);
