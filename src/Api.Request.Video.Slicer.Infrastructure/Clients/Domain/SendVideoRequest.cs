@@ -1,4 +1,4 @@
-﻿using Api.Request.Video.Slicer.Domain.ValueObjects;
+using Api.Request.Video.Slicer.Domain.ValueObjects;
 
 namespace Api.Request.Video.Slicer.Infrastucture.Clients.Domain
 {

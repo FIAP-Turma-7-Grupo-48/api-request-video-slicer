@@ -23,11 +23,10 @@ internal static class InfrastructureExtension
 	{
 
 		return services
-            .AddContext(configuration)
+			.AddContext(configuration)
 			.AddS3FileStorage()
-            .AddMongoRepositories()			
-			.AddClients(configuration)			
-			.AddRabbitMqConnectionFactory(configuration);
+			.AddMongoRepositories()
+			.AddClients(configuration);			
 	}
 
 	private static IServiceCollection AddMongoRepositories(this IServiceCollection services)
@@ -64,21 +63,6 @@ internal static class InfrastructureExtension
 			services
 				.AddSingleton<IVideoSlicerClient, VideoSlicerRabbitMqClient>();
     }
-
-    private static IServiceCollection AddRabbitMqConnectionFactory(this IServiceCollection services, IConfiguration configuration)
-    {
-        return
-            services
-                .AddSingleton<IConnectionFactory>(
-					new ConnectionFactory() 
-					{ 
-						HostName = "localhost",
-						Port = 5672,
-                        UserName = Environment.GetEnvironmentVariable("RABBITMQ_USER"),
-                        Password = Environment.GetEnvironmentVariable("RABBITMQ_PASS")
-                    }
-				);
-    } 
 
 	private static string GetConnectionString()
 	{
