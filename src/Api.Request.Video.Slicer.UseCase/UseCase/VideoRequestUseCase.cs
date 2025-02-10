@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Api.Request.Video.Slicer.Domain;
+﻿using Api.Request.Video.Slicer.Domain;
 using Api.Request.Video.Slicer.Domain.Entities.Dtos.VideoRequestResponse;
 using Api.Request.Video.Slicer.Domain.Enum;
 using Api.Request.Video.Slicer.Domain.ValueObjects;
 using Api.Request.Video.Slicer.Infrastructure.Repository.Interfaces;
-using Api.Request.Video.Slicer.Infrastucture.Repositories;
 using Api.Request.Video.Slicer.Infrastucture.Repositories.interfaces;
 using Api.Request.Video.Slicer.UseCase.Dtos;
 using Api.Request.Video.Slicer.UseCase.UseCase.Interfaces;
@@ -47,7 +41,7 @@ namespace Api.Request.Video.Slicer.UseCase.UseCase
 
             await _fileStorageRepository.UploadFileAsync(createVideoRequestRequest.Video.Data, $"{videoRequest.Id}");
 
-            await _videoRequestRepository.Create(videoRequest);
+            await _videoRequestRepository.CreateAsync(videoRequest);
 
             await _videoSlicerClient.SendAsync(videoRequest);
 
@@ -56,10 +50,10 @@ namespace Api.Request.Video.Slicer.UseCase.UseCase
 
         public async Task UpdateStatusAsync(UpdateVideoRequestStatus updateVideoRequestStatus)
         {
-            VideoRequest videoRequest = _videoRequestRepository.GetById(updateVideoRequestStatus.RequestId);
+            VideoRequest videoRequest = await _videoRequestRepository.GetByIdAsync(updateVideoRequestStatus.RequestId);
 
             videoRequest.Status = updateVideoRequestStatus.Status;
-            if(updateVideoRequestStatus.Status == RequestStatus.Processed)
+            if (updateVideoRequestStatus.Status == RequestStatus.Processed)
             {
                 videoRequest.ZippedImg = updateVideoRequestStatus.File;
             }
@@ -68,18 +62,23 @@ namespace Api.Request.Video.Slicer.UseCase.UseCase
 
         }
 
+        public Task<IEnumerable<VideoRequest>> ListAsync(IEnumerable<RequestStatus> orderStatus, int? page, int? limit, CancellationToken cancellationToken)
+        {
+            return _videoRequestRepository.ListAsync(orderStatus, page, limit, cancellationToken);  
+        }
+
         public async Task<GetImagesResponse?> GetById(string id)
         {
 
-            
-            VideoRequest videoRequest = _videoRequestRepository.GetById(id);
 
-            if (videoRequest.Status != Domain.Enum.RequestStatus.Processed)
+            VideoRequest videoRequest = await _videoRequestRepository.GetByIdAsync(id);
+
+            if (videoRequest.Status != RequestStatus.Processed)
             {
                 //Todo: dar error
 
             }
-                var bytes = await _fileStorageRepository.DownloadFileAsync(videoRequest.ZippedImg!.Value.Key, "");
+            var bytes = await _fileStorageRepository.DownloadFileAsync(videoRequest.ZippedImg!.Value.Key, "");
             GetImagesResponse response = new()
             {
                 Images = bytes.ToArray(),

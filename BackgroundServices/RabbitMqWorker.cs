@@ -45,7 +45,7 @@ namespace api_request_video_slicer.BackgroundServices
 
                         return ProcessMessage(messageJson, stoppingToken);
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
 
                         throw;

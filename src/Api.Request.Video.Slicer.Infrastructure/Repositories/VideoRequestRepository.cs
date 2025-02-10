@@ -1,5 +1,7 @@
 ﻿using Api.Request.Video.Slicer.Domain;
+using Api.Request.Video.Slicer.Domain.Enum;
 using Api.Request.Video.Slicer.Infrastructure.Context;
+using Api.Request.Video.Slicer.Infrastucture.Helpers;
 using Api.Request.Video.Slicer.Infrastucture.Repositories.interfaces;
 using MongoDB.Driver;
 
@@ -12,7 +14,7 @@ namespace Api.Request.Video.Slicer.Infrastucture.Repositories
         {
             this._collectionVideoRequest = context._database.GetCollection<VideoRequest>("VideoRequest");
         }
-        public async Task Create(VideoRequest videoRequestEntity)
+        public async Task CreateAsync(VideoRequest videoRequestEntity)
         {
             await _collectionVideoRequest.InsertOneAsync(videoRequestEntity);
 
@@ -20,25 +22,44 @@ namespace Api.Request.Video.Slicer.Infrastucture.Repositories
 
         public async Task UpdateAsync(VideoRequest videoRequestEntity)
         {
-            var filter = Builders<VideoRequest>.Filter.Eq(x => x.Id, videoRequestEntity.Id);
-            await _collectionVideoRequest.ReplaceOneAsync(filter, videoRequestEntity);
+            var filters = Builders<VideoRequest>.Filter.Eq(x => x.Id, videoRequestEntity.Id);
+            var options = new FindOneAndReplaceOptions<VideoRequest>()
+            {
+                ReturnDocument = ReturnDocument.After,
+                IsUpsert = false
+            };
 
+            var replacedOrder = await _collectionVideoRequest.FindOneAndReplaceAsync(filters, videoRequestEntity, options);
         }
 
-        public VideoRequest GetById(string id)
+
+        public async Task<IEnumerable<VideoRequest>> ListAsync(IEnumerable<RequestStatus> orderStatus, int? page, int? limit, CancellationToken cancellationToken)
+        {
+            var take = limit ?? int.MaxValue;
+
+            var skip = MathHelper.CalculatePaginateSkip(page, take);
+
+            var findOptions = new FindOptions<VideoRequest>()
+            {
+                Skip = skip,
+                Limit = take
+            };
+
+            var filters = Builders<VideoRequest>
+                .Filter
+                .In(x => x.Status, orderStatus);
+
+            var orders = await _collectionVideoRequest
+                .FindAsync(filters, findOptions, cancellationToken);
+
+            return orders.ToEnumerable();
+        }
+
+        public async Task<VideoRequest> GetByIdAsync(string id)
         {
             var filter = Builders<VideoRequest>.Filter.Eq(x => x.Id, id);
-            return this._collectionVideoRequest.Find(filter).FirstOrDefault();
+            return await _collectionVideoRequest.Find(filter).FirstOrDefaultAsync();
         }
 
-        public List<VideoRequest> GetPendingRequests()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task Update(VideoRequest videoRequestEntity)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

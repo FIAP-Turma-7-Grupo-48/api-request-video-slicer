@@ -1,22 +1,22 @@
 ﻿using Api.Request.Video.Slicer.Controller.Application.Interfaces;
+using Api.Request.Video.Slicer.Controller.Dtos;
 using Api.Request.Video.Slicer.Domain.Entities.Dtos.VideoRequestResponse;
 using Api.Request.Video.Slicer.Domain.Enum;
 using Api.Request.Video.Slicer.UseCase.Dtos;
 using api_request_video_slicer.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using WebApi.Extensions;
 
 namespace api_request_video_slicer.Controllers
-{    
+{
     public class VideoRequestController : Controller
     {
-        private readonly IVideoRequestApplication _videoRequestApplication;        
-        public VideoRequestController(IVideoRequestApplication videoRequestApplication) 
+        private readonly IVideoRequestApplication _videoRequestApplication;
+        public VideoRequestController(IVideoRequestApplication videoRequestApplication)
         {
             _videoRequestApplication = videoRequestApplication;
         }
         [HttpGet("health-check")]
-        public async Task<IActionResult> healthCheck()
+        public IActionResult healthCheck()
         {
             return Ok();
         }
@@ -24,7 +24,7 @@ namespace api_request_video_slicer.Controllers
         [HttpPost("upload-video")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]        
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UploadVideo(IFormFile formFile, CancellationToken cancellationToken)
         {
             if (formFile == null || formFile.Length == 0)
@@ -44,10 +44,10 @@ namespace api_request_video_slicer.Controllers
                 CreateVideoRequestRequest createVideo = new()
                 {
                     Video = videoFile
-                };                    
+                };
 
                 CreateVideoRequestResponse? response = await _videoRequestApplication.CreateAsync(createVideo);
-                 
+
                 return Ok(response);
             }
             catch (Exception ex)
@@ -57,8 +57,22 @@ namespace api_request_video_slicer.Controllers
 
         }
 
+        [ProducesResponseType(typeof(IEnumerable<ListVideoRequestResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet]
+        [Route("status")]
+        public async Task<IActionResult> ListAsync(List<RequestStatus> requestStatus, int? page, int? limit, CancellationToken cancellationToken)
+        {
+            var response = await _videoRequestApplication.ListAsync(requestStatus, page, limit, cancellationToken);
+            if (response == null || !response.Any())
+            {
+                return NotFound();
+            }
+            return Ok(response);
 
-        [HttpGet("download-images/{id}")]
+        }
+            [HttpGet("download-images/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -66,6 +80,10 @@ namespace api_request_video_slicer.Controllers
         {
             GetImagesResponse? response = await _videoRequestApplication.GetById(id);
 
+            if(response == null)
+            {
+                return NotFound();
+            }
             return File(response.Images, "application/zip");
         }
     }

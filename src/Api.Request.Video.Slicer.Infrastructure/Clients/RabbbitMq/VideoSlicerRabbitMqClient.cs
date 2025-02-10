@@ -1,4 +1,5 @@
 ﻿using Api.Request.Video.Slicer.Domain;
+using Api.Request.Video.Slicer.Domain.ValueObjects;
 using Api.Request.Video.Slicer.Infrastucture.Clients.Domain;
 using RabbitMQ.Client;
 
@@ -17,9 +18,8 @@ public class VideoSlicerRabbitMqClient :  RabbitMQPublisher<VideoRequest>, IVide
     {
         var dto = new SendVideoRequest
         {
-            fileName = videoRequest.FileName,
-            videoUrl = videoRequest.videoUrl,
-            id = videoRequest.Id.ToString(),
+            StorageFile = videoRequest.Video,
+            RequestId = videoRequest.Id.ToString(),
         };
 
         await PublishMessageAsync(videoRequest);

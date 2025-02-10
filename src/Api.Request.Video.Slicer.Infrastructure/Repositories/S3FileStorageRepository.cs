@@ -96,12 +96,12 @@ namespace Api.Request.Video.Slicer.Infrastructure.Repository
             catch (AmazonS3Exception e)
             {
                 Console.WriteLine("Error during download: " + e.Message);
-                return null;
+                return [];
             }
             catch (Exception e)
             {
                 Console.WriteLine("Error: " + e.Message);
-                return null;
+                return [];
             }
         }
 

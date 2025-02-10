@@ -1,7 +1,8 @@
-using Amazon.S3.Model.Internal.MarshallTransformations;
 using Api.Request.Video.Slicer.Controller.Application.Interfaces;
+using Api.Request.Video.Slicer.Controller.Dtos;
 using Api.Request.Video.Slicer.Domain;
 using Api.Request.Video.Slicer.Domain.Entities.Dtos.VideoRequestResponse;
+using Api.Request.Video.Slicer.Domain.Enum;
 using Api.Request.Video.Slicer.UseCase.Dtos;
 using Api.Request.Video.Slicer.UseCase.UseCase.Interfaces;
 
@@ -28,9 +29,18 @@ public class VideoRequestApplication : IVideoRequestApplication
         return _videoRequestUseCase.UpdateStatusAsync(updateVideoRequestStatus);
     }
 
-    public Task<CreateVideoRequestResponse?> CreateInBucket(CreateVideoRequestRequest createVideoRequestRequest, Stream stream)
+    public async Task<IEnumerable<ListVideoRequestResponse>> ListAsync(IEnumerable<RequestStatus> requestStatus, int? page, int? limit, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var requests = await _videoRequestUseCase.ListAsync(requestStatus, page, limit, cancellationToken);
+
+        var response = requests.Select(x => new ListVideoRequestResponse() { 
+            Id = x.Id,
+            FileName = x.FileName,
+            Extension = x.Extension,
+            Status = x.Status,
+        });
+
+        return response;
     }
 
     public async Task<GetImagesResponse?> GetById(string id)
