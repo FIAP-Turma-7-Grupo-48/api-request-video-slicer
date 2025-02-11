@@ -22,6 +22,7 @@ builder.Services.AddUseCase();
 builder.Services.AddControllerLayerDI();
 builder.Services.AddInfrastructure(builder.Configuration);
 AddRabbitMqConnectionFactory(builder.Services);
+builder.Services.AddHostedService<RabbitMqWorker>();
 
 
 builder.Services.AddAuthentication(options =>
@@ -34,7 +35,7 @@ builder.Services.AddAuthentication(options =>
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JwtKey"))),
         ValidateIssuer = false,
         ValidateAudience = false
     };
@@ -56,7 +57,7 @@ builder.Services.Configure<KestrelServerOptions>(options =>
 });
 
 var app = builder.Build();
-builder.Services.AddHostedService<RabbitMqWorker>();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
