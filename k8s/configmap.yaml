@@ -3,10 +3,4 @@ kind: ConfigMap
 metadata:
   name: fiap-video-request-api
 data:
-  ASPNETCORE_ENVIRONMENT: "Development"
-  DefaultConnection: "mongodb://root:example@localhost:27017/"
-  DefaultDatabase: "VideoRequestSlicer"
-  AWS_ACCESS_KEY_ID: ""
-  AWS_SECRET_ACCESS_KEY: ""  
-  RABBITMQ_USER: "admin"
-  RABBITMQ_PASS: "admin"
+  ASPNETCORE_ENVIRONMENT: "Development"  

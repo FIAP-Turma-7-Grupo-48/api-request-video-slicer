@@ -8,7 +8,7 @@ namespace Infrastructure.Clients.RabbbitMq;
 
 public class VideoSlicerRabbitMqClient :  RabbitMQPublisher<VideoRequest>, IVideoSlicerClient
 {
-    public const string QueueName = "SendVideoRequest";
+    public const string QueueName = "RequestVideoSlicer";
     public VideoSlicerRabbitMqClient(IConnectionFactory factory) : base(factory, QueueName)
     {
 
