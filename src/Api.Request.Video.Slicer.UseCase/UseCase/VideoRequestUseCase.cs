@@ -65,7 +65,7 @@ namespace Api.Request.Video.Slicer.UseCase.UseCase
 
         public Task<IEnumerable<VideoRequest>> ListAsync(IEnumerable<RequestStatus> orderStatus, string userId, int? page, int? limit, CancellationToken cancellationToken)
         {
-            return _videoRequestRepository.ListAsync(orderStatus, page, limit, cancellationToken);  
+            return _videoRequestRepository.ListAsync(orderStatus, userId, page, limit, cancellationToken);  
         }
 
         public async Task<GetImagesResponse?> GetById(string id)

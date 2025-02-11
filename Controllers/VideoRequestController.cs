@@ -69,7 +69,7 @@ namespace api_request_video_slicer.Controllers
         public async Task<IActionResult> ListAsync(List<RequestStatus> requestStatus, int? page, int? limit, CancellationToken cancellationToken)
         {
             var userId = User.Identity.Name;
-            var response = await _videoRequestApplication.ListAsync(requestStatus, page, limit, cancellationToken);
+            var response = await _videoRequestApplication.ListAsync(requestStatus, userId, page, limit, cancellationToken);
             if (response == null || !response.Any())
             {
                 return NotFound();
