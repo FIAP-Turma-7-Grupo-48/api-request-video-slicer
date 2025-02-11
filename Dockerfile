@@ -13,6 +13,6 @@ WORKDIR /app
 
 COPY --from=build-env /app/out ./
 
-EXPOSE 80
+EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "Api.Request.Video.Slicer.dll"]
