@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: fiap-video-request-api
-data:
-  ASPNETCORE_ENVIRONMENT: "Development"  
