@@ -21,8 +21,7 @@ namespace api_request_video_slicer.Controllers
         {
             return Ok();
         }
-
-        [Authorize]
+        
         [HttpPost("upload-video")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -59,8 +58,7 @@ namespace api_request_video_slicer.Controllers
             }
 
         }
-
-        [Authorize]
+        
         [ProducesResponseType(typeof(IEnumerable<ListVideoRequestResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -77,8 +75,7 @@ namespace api_request_video_slicer.Controllers
             return Ok(response);
 
         }
-
-        [Authorize]
+        
         [HttpGet("download-images/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
